@@ -1,10 +1,16 @@
 
-function MainContainer({city, temperature, humidity, windSpeed, pressure}){
+function MainContainer({city, temperature, humidity, windSpeed, pressure, errorMessage}){
     return (
         !city ? (
-            <div className="container d-flex flex-row align-items-center justify-content-center mt-5 mb-5">
-                <h4>Please, type city where you want to check current forecast</h4>
-            </div>
+            errorMessage ? (
+                <div className="container d-flex flex-row align-items-center justify-content-center mt-5 mb-5">
+                    <h4>{errorMessage}</h4>
+                </div>
+            ) : (
+                <div className="container d-flex flex-row align-items-center justify-content-center mt-5 mb-5">
+                    <h4>Please, type city where you want to check current forecast</h4>
+                </div>
+            )
         ) : (
             <div className="container d-flex flex-column">
                 <div className="container d-flex flex-column align-items-center p-5">

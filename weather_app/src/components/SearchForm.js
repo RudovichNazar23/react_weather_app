@@ -1,5 +1,3 @@
-import { useState } from "react";
-
 
 function SearchForm({ onChange, onSubmit, city }){
     return (

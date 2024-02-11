@@ -4,6 +4,8 @@ import SearchForm from './components/SearchForm';
 import MainContainer from './components/MainContainer';
 import Footer from './components/Footer';
 
+const API_ID = process.env.REACT_APP_API_ID;
+
 function App() {
   const [city, setCity] = useState("");
   const [data, setData] = useState(
@@ -13,7 +15,8 @@ function App() {
       humidity: "",
       cityName: "",
       windSpeed: "",
-      main: ""
+      main: "",
+      errorMessage: "",
     }
   );
 
@@ -27,21 +30,26 @@ function App() {
 
     if(!event.target.elements.cityName.value) return;
 
-    const apiId = process.env.REACT_APP_API_ID;
-    const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=Metric&appid=${apiId}`;
+    const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=Metric&appid=${API_ID}`;
 
 
     fetch(url).then(res => {
       return res.json()
     }).then(data => {
-      setData({
-        temp: data.main.temp,
-        pressure: data.main.pressure,
-        humidity: data.main.humidity,
-        cityName: data.name,
-        windSpeed: data.wind.speed,
-        main: data.weather[0].main
-      });
+      if(data.cod === "404"){
+        setData({
+          errorMessage: "City not found",
+        })
+      } else {
+          setData({
+            temp: data.main.temp,
+            pressure: data.main.pressure,
+            humidity: data.main.humidity,
+            cityName: data.name,
+            windSpeed: data.wind.speed,
+            main: data.weather[0].main
+          });
+      }
     });
   };
 
@@ -50,7 +58,7 @@ function App() {
         <div className="container border border-dark rounded bg-light mt-5 p-3 d-flex flex-column">
             <SearchForm onChange={onChange} city={city} onSubmit={onSubmit} />
             <hr />
-            <MainContainer city={data.cityName} temperature={data.temp} humidity={data.humidity} windSpeed={data.windSpeed} pressure={data.pressure} />
+            <MainContainer city={data.cityName} temperature={data.temp} humidity={data.humidity} windSpeed={data.windSpeed} pressure={data.pressure} errorMessage={data.errorMessage} />
         </div>
         <div>
           <Footer imageSource={"sunny.png"} />

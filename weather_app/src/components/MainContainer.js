@@ -1,5 +1,6 @@
 
-function MainContainer({city, temperature, humidity, windSpeed, pressure, errorMessage}){
+function MainContainer({city, temperature, humidity, windSpeed, pressure, errorMessage, main, image}){
+
     return (
         !city ? (
             errorMessage ? (
@@ -13,12 +14,22 @@ function MainContainer({city, temperature, humidity, windSpeed, pressure, errorM
             )
         ) : (
             <div className="container d-flex flex-column">
-                <div className="container d-flex flex-column align-items-center p-5">
-                    <h2>{city}</h2>
-                    <div className="mt-3">
-                        <h3>{Math.floor(temperature)}°C</h3>
+                <div className="d-flex flex-row align-items-center justify-content-center p-5">
+                    <div className="d-flex flex-column align-items-center p-5 m-2">
+                        <div className="mb-2">
+                            {image}
+                        </div>
+                        <div className="text-center mt-2">
+                            <strong>{main}</strong>
+                        </div>
                     </div>
-                </div>
+                    <div className="d-flex flex-column align-items-center p-5 m-2">
+                        <h2>{city}</h2>
+                        <div className="mt-3">
+                            <h3>{Math.floor(temperature)}°C</h3>
+                        </div>
+                    </div>
+                </div>  
                 <hr />
                 <div className="d-flex flex-row align-items-center justify-content-between p-2">
                     <div className="p-3 d-flex flex-column">

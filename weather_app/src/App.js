@@ -6,6 +6,16 @@ import Footer from './components/Footer';
 
 const API_ID = process.env.REACT_APP_API_ID;
 
+const mainPictures = {
+  "Snow": "/snow.png",
+  "Rain": "/heavy-rain.png",
+  "Clouds": "/cloud.png",
+  "Clear": "/sunny.png",
+  "Smoke": "/carbon-dioxide.png",
+  "Drizzle": "/drizzle.png",
+};
+
+
 function App() {
   const [city, setCity] = useState("");
   const [data, setData] = useState(
@@ -58,7 +68,16 @@ function App() {
         <div className="container border border-dark rounded bg-light mt-5 p-3 d-flex flex-column">
             <SearchForm onChange={onChange} city={city} onSubmit={onSubmit} />
             <hr />
-            <MainContainer city={data.cityName} temperature={data.temp} humidity={data.humidity} windSpeed={data.windSpeed} pressure={data.pressure} errorMessage={data.errorMessage} />
+            <MainContainer 
+              city={data.cityName} 
+              temperature={data.temp} 
+              humidity={data.humidity} 
+              windSpeed={data.windSpeed} 
+              pressure={data.pressure} 
+              errorMessage={data.errorMessage} 
+              main={data.main}
+              image={<img src={mainPictures[data.main]} />}
+              />
         </div>
         <div>
           <Footer imageSource={"sunny.png"} />

@@ -1,5 +1,5 @@
 
-function MainContainer({city, temperature, humidity, windSpeed, pressure, errorMessage, main, image}){
+function MainContainer({city, temperature, humidity, windSpeed, pressure, errorMessage, conditions, image}){
 
     return (
         !city ? (
@@ -20,7 +20,7 @@ function MainContainer({city, temperature, humidity, windSpeed, pressure, errorM
                             {image}
                         </div>
                         <div className="text-center mt-2">
-                            <strong>{main}</strong>
+                            <strong>{conditions}</strong>
                         </div>
                     </div>
                     <div className="d-flex flex-column align-items-center p-5 m-2">

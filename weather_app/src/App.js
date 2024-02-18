@@ -3,32 +3,35 @@ import { useState } from 'react';
 import SearchForm from './components/SearchForm';
 import MainContainer from './components/MainContainer';
 import Footer from './components/Footer';
+import CurrentDataParser from './components/CurrentDataParser';
 
 const API_ID = process.env.REACT_APP_API_ID;
 
-const mainPictures = {
-  "Snow": "/snow.png",
-  "Rain": "/heavy-rain.png",
-  "Clouds": "/cloud.png",
-  "Clear": "/sunny.png",
-  "Smoke": "/carbon-dioxide.png",
-  "Drizzle": "/drizzle.png",
+const weatherIcons = {
+  "cloudy": <img src="/cloud.png" />,
+  "partly-cloudy-night": <img src="/part-cloud.png" />,
+  "clear": <img src="/sunny.png" />,
+  "clear-night": <img src="/clear-night.png"></img>,
+  "rain": <img src="/heavy-rain.png"></img>
 };
 
 
 function App() {
   const [city, setCity] = useState("");
-  const [data, setData] = useState(
+  const [currentData, setCurrentData] = useState(
     {
       temp: "",
       pressure: "",
       humidity: "",
       cityName: "",
       windSpeed: "",
-      main: "",
+      icon: "",
       errorMessage: "",
+      conditions: ""
     }
   );
+  const [futureData, setFutureData] = useState();
+
 
   const onChange = (event) => {
     const value = event.target.value;
@@ -40,28 +43,16 @@ function App() {
 
     if(!event.target.elements.cityName.value) return;
 
-    const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=Metric&appid=${API_ID}`;
+    const url = `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${city}?key=${API_ID}`;
 
-
-    fetch(url).then(res => {
-      return res.json()
-    }).then(data => {
-      if(data.cod === "404"){
-        setData({
-          errorMessage: "City not found",
-        })
-      } else {
-          setData({
-            temp: data.main.temp,
-            pressure: data.main.pressure,
-            humidity: data.main.humidity,
-            cityName: data.name,
-            windSpeed: data.wind.speed,
-            main: data.weather[0].main
-          });
-      }
-    });
-  };
+    fetch(url)
+    .then(res => res.json())
+    .then(data => {
+      setCurrentData(CurrentDataParser(data))
+      setFutureData(data.days.slice(1, 6));
+    })
+    .catch(error => setCurrentData({errorMessage: "Incorrect city name"}));
+  }
 
   return (
     <div className="container d-flex flex-column">
@@ -69,18 +60,17 @@ function App() {
             <SearchForm onChange={onChange} city={city} onSubmit={onSubmit} />
             <hr />
             <MainContainer 
-              city={data.cityName} 
-              temperature={data.temp} 
-              humidity={data.humidity} 
-              windSpeed={data.windSpeed} 
-              pressure={data.pressure} 
-              errorMessage={data.errorMessage} 
-              main={data.main}
-              image={<img src={mainPictures[data.main]} />}
-              />
+                temperature={currentData.temp}
+                pressure={currentData.pressure}
+                humidity={currentData.humidity}
+                windSpeed={currentData.windSpeed}
+                city={currentData.cityName}
+                image={weatherIcons[currentData.icon]}
+                conditions={currentData.conditions}
+            />
         </div>
         <div>
-          <Footer imageSource={"sunny.png"} />
+          <Footer data={futureData}/>
         </div>
     </div>
 

@@ -1,6 +1,6 @@
 import TemperatureConverter from "./TemperatureConverter";
 
-function Footer({ data }){
+function Footer({ data, icons }){
     return (
             data ? (
                 <div className="container d-flex flex-column border border-dark rounded bg-light mt-3 p-3 align-items-center">
@@ -11,10 +11,11 @@ function Footer({ data }){
                                 data.map(
                                     (item) => {
                                         return (
-                                            <div className="d-flex flex-column p-2 border rounded" key={item.datetime}>
+                                            <div className="d-flex flex-column p-3 border rounded" key={item.datetime}>
                                                 <div><strong>{item.datetime}</strong></div>
                                                 <hr />
-                                                <div className="text-center">{TemperatureConverter(item.temp)}°C</div>
+                                                <div className="text-center mt-2">{icons[item.icon]}</div>
+                                                <div className="text-center mt-2">{TemperatureConverter(item.temp)}°C</div>
                                             </div>
                                         )
                                     }

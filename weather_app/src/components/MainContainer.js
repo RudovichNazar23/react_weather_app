@@ -1,16 +1,19 @@
+import InfoContainer from "./InfoContainer";
+import AdditionalInfoContainer from "./AdditionalInfoContainer";
+
 
 function MainContainer({city, temperature, humidity, windSpeed, pressure, errorMessage, conditions, image}){
 
     return (
         !city ? (
             errorMessage ? (
-                <div className="container d-flex flex-row align-items-center justify-content-center mt-5 mb-5">
-                    <h4>{errorMessage}</h4>
-                </div>
+                    <InfoContainer>
+                        <h4>{errorMessage}</h4>
+                    </InfoContainer>
             ) : (
-                <div className="container d-flex flex-row align-items-center justify-content-center mt-5 mb-5">
+                <InfoContainer>
                     <h4>Please, type city where you want to check current forecast</h4>
-                </div>
+                </InfoContainer>
             )
         ) : (
             <div className="container d-flex flex-column">
@@ -32,27 +35,9 @@ function MainContainer({city, temperature, humidity, windSpeed, pressure, errorM
                 </div>  
                 <hr />
                 <div className="d-flex flex-row align-items-center justify-content-between p-2">
-                    <div className="p-3 d-flex flex-column">
-                        <div className="text-center">Humidity</div>
-                        <hr style={{width: "80px"}} />
-                        <div className="text-center">
-                            {humidity} %
-                        </div>
-                    </div>
-                    <div className="p-3 d-flex flex-column">
-                        <div className="text-center">Wind</div> 
-                        <hr style={{width: "80px"}} />
-                        <div className="text-center">
-                            {windSpeed} kph
-                        </div>
-                    </div>
-                    <div className="p-3 d-flex flex-column">
-                        <div className="text-center">Pressure</div>
-                        <hr style={{width: "80px"}} />
-                        <div className="text-center">
-                            {pressure} hPa
-                        </div>
-                    </div>
+                    <AdditionalInfoContainer valueName={"Humidity"} value={humidity} valueMeasurement={"%"} />
+                    <AdditionalInfoContainer valueName={"Wind speed"} value={windSpeed} valueMeasurement={"kph"} />
+                    <AdditionalInfoContainer valueName={"Pressure"} value={pressure} valueMeasurement={"hpa"} />
                 </div>
             </div>
         )

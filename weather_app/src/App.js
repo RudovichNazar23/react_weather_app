@@ -9,10 +9,12 @@ const API_ID = process.env.REACT_APP_API_ID;
 
 const weatherIcons = {
   "cloudy": <img src="/cloud.png" />,
-  "partly-cloudy-night": <img src="/part-cloud.png" />,
+  "partly-cloudy-night": <img src="/part-cloud-night.png" />,
+  "partly-cloudy-day": <img src={"/part-cloud.png"}></img>,
   "clear": <img src="/sunny.png" />,
   "clear-night": <img src="/clear-night.png"></img>,
-  "rain": <img src="/heavy-rain.png"></img>
+  "rain": <img src="/heavy-rain.png"></img>,
+  "snow": <img src="/snow.png" />
 };
 
 
@@ -70,7 +72,7 @@ function App() {
             />
         </div>
         <div>
-          <Footer data={futureData}/>
+          <Footer data={futureData} icons={weatherIcons} />
         </div>
     </div>
 

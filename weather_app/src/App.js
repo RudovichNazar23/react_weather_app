@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useReducer } from 'react';
 
+import LoadDataReducer from './reducers/LoadDataReducer';
 import SearchForm from './components/SearchForm';
 import MainContainer from './components/MainContainer';
 import Footer from './components/Footer';
@@ -17,21 +18,17 @@ const weatherIcons = {
   "snow": <img src="/snow.png" />
 };
 
+const initialState = {
+  type: "INITIALIZE",
+  message: "Please, type city where you want to check current forecast",
+  error: null,
+  result: null
+}
+
 
 function App() {
   const [city, setCity] = useState("");
-  const [currentData, setCurrentData] = useState(
-    {
-      temp: "",
-      pressure: "",
-      humidity: "",
-      cityName: "",
-      windSpeed: "",
-      icon: "",
-      errorMessage: "",
-      conditions: ""
-    }
-  );
+  const [state, dispatch] = useReducer(LoadDataReducer, initialState)
   const [futureData, setFutureData] = useState();
 
 
@@ -46,14 +43,18 @@ function App() {
     if(!event.target.elements.cityName.value) return;
 
     const url = `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${city}?key=${API_ID}`;
-
-    fetch(url)
-    .then(res => res.json())
-    .then(data => {
-      setCurrentData(CurrentDataParser(data))
-      setFutureData(data.days.slice(1, 6));
-    })
-    .catch(error => setCurrentData({errorMessage: "Incorrect city name"}));
+    dispatch({ type: "LOADING", payload: "Loading"})
+    let myInterval = setInterval(
+        fetch(url)
+        .then(res => res.json())
+        .then(data => {
+          dispatch({type: "SUCCESS", payload: CurrentDataParser(data)});
+          setFutureData(data.days.slice(1, 6));
+        })
+        .catch(error => dispatch({ type: "ERROR", payload: "Failed to find this city" })),
+      10000
+    )
+    clearInterval(myInterval)
   }
 
   return (
@@ -61,15 +62,7 @@ function App() {
         <div className="container border border-dark rounded bg-light mt-5 p-3 d-flex flex-column">
             <SearchForm onChange={onChange} city={city} onSubmit={onSubmit} />
             <hr />
-            <MainContainer 
-                temperature={currentData.temp}
-                pressure={currentData.pressure}
-                humidity={currentData.humidity}
-                windSpeed={currentData.windSpeed}
-                city={currentData.cityName}
-                image={weatherIcons[currentData.icon]}
-                conditions={currentData.conditions}
-            />
+            <MainContainer state={state} icons={weatherIcons}/>
         </div>
         <div>
           <Footer data={futureData} icons={weatherIcons} />
